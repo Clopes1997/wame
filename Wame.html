@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://img.icons8.com/?size=256&id=3685&format=png" type="image/x-icon">
+<title>Open Links in New Tabs</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-image: url('https://i.pinimg.com/736x/4a/aa/49/4aaa49626ce2f6bec3def32e767fb354.jpg');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .overlay {
+        background-color: rgba(0, 0, 0, 0.5);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        max-width: 800px;
+        padding: 20px;
+        text-align: center;
+        color: #fff;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+        width: calc(100% - 100px);
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    @media only screen and (max-width: 600px) {
+        input[type="text"] {
+            width: 100%;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="overlay">
+        <div class="container">
+            <h1>Click the button to open WhatsApp links in new tabs</h1>
+
+            <input type="text" id="linkString" placeholder="Enter a string with cellphone numbers">
+            <button onclick="openLinksInNewTabs()">Open Links</button>
+        </div>
+    </div>
+
+    <script>
+        function openLinksInNewTabs() {
+            const linkString = document.getElementById('linkString').value;
+            const phonePattern = /\b(\(?\d{2}\)?\s?)?(\d{4,5}[-\s]?\d{4})\b/g;
+            const phoneNumbers = linkString.match(phonePattern);
+
+            if (phoneNumbers) {
+                phoneNumbers.forEach(number => {
+                    let cleanNumber = number.replace(/\D/g, ''); // Remove all non-digit characters
+                    if (cleanNumber.length === 10) {
+                        cleanNumber = '55' + cleanNumber; // Add country code for 10-digit numbers
+                    } else if (cleanNumber.length === 11 && cleanNumber[0] !== '5') {
+                        cleanNumber = '55' + cleanNumber; // Add country code for 11-digit numbers not starting with 5
+                    }
+                    const waLink = `https://wa.me/${cleanNumber}`;
+                    window.open(waLink, '_blank');
+                });
+            } else {
+                alert('No cellphone numbers found in the input string.');
+            }
+        }
+    </script>
+</body>
+</html>
