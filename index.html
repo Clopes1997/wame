@@ -75,7 +75,7 @@
     <script>
         function openLinksInNewTabs() {
             const linkString = document.getElementById('linkString').value;
-            const phonePattern = /\b(\(?\d{2}\)?\s?)?(\d{4,5}[-\s]?\d{4})\b/g;
+            const phonePattern = /\b\d{10,12}\b/g; // Updated regex to match 10 to 12 digit numbers
             const phoneNumbers = linkString.match(phonePattern);
 
             if (phoneNumbers) {
