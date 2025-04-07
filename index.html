@@ -1,98 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="https://img.icons8.com/?size=256&id=3685&format=png" type="image/x-icon">
-<title>WhatsApp Link Opener</title>
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://img.icons8.com/?size=256&id=3685&format=png" type="image/x-icon">
+  <title>WhatsApp Link Opener</title>
+  <style>
+    :root {
+      --primary-color: #25D366;
+      --primary-hover: #128C7E;
+      --text-color: #fff;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
     body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-image: url('https://i.pinimg.com/736x/4a/aa/49/4aaa49626ce2f6bec3def32e767fb354.jpg');
-        background-size: cover;
-        background-position: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-image: url('https://i.pinimg.com/736x/4a/aa/49/4aaa49626ce2f6bec3def32e767fb354.jpg');
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
     }
-
-    .overlay {
-        background-color: rgba(0, 0, 0, 0.5);
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    
+    .page-overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
     }
-
-    .container {
-        max-width: 800px;
-        padding: 20px;
-        text-align: center;
-        color: #fff;
+    
+    .app-container {
+      max-width: 600px;
+      width: 100%;
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-color);
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      backdrop-filter: blur(5px);
     }
-
-    h1 {
-        margin-bottom: 20px;
+    
+    .app-title {
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
     }
-
-    input[type="text"] {
-        width: calc(100% - 100px);
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin-bottom: 10px;
+    
+    .phone-input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 1rem;
     }
-
-    button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+    
+    .action-button {
+      padding: 12px 24px;
+      background-color: var(--primary-color);
+      color: var(--text-color);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: background-color 0.3s;
     }
-
-    button:hover {
-        background-color: #0056b3;
+    
+    .action-button:hover {
+      background-color: var(--primary-hover);
     }
-
-    @media only screen and (max-width: 600px) {
-        input[type="text"] {
-            width: 100%;
-        }
+    
+    @media (max-width: 480px) {
+      .app-container {
+        padding: 1.5rem;
+      }
+      
+      .app-title {
+        font-size: 1.5rem;
+      }
     }
-</style>
+  </style>
 </head>
 <body>
-    <div class="overlay">
-        <div class="container">
-            <h1>Click the button to open WhatsApp links in new tabs</h1>
-
-            <input type="text" id="linkString" placeholder="Enter a string with cellphone numbers">
-            <button onclick="openLinksInNewTabs()">Open Links</button>
-        </div>
+  <div class="page-overlay">
+    <div class="app-container">
+      <h1 class="app-title">WhatsApp Link Generator</h1>
+      <input 
+        type="text" 
+        id="phoneNumberInput" 
+        class="phone-input" 
+        placeholder="Enter phone numbers (separated by spaces, commas, or new lines)"
+      >
+      <button id="openWhatsAppBtn" class="action-button">Open WhatsApp Chats</button>
     </div>
+  </div>
 
-    <script>
-        function openLinksInNewTabs() {
-            const linkString = document.getElementById('linkString').value;
-            const phonePattern = /\b\d{10,12}\b/g; // Updated regex to match 10 to 12 digit numbers
-            const phoneNumbers = linkString.match(phonePattern);
-
-            if (phoneNumbers) {
-                phoneNumbers.forEach(number => {
-                    let cleanNumber = number.replace(/\D/g, ''); // Remove all non-digit characters
-                    if (cleanNumber.length === 10) {
-                        cleanNumber = '55' + cleanNumber; // Add country code for 10-digit numbers
-                    } else if (cleanNumber.length === 11 && cleanNumber[0] !== '5') {
-                        cleanNumber = '55' + cleanNumber; // Add country code for 11-digit numbers not starting with 5
-                    }
-                    const waLink = `https://wa.me/${cleanNumber}`;
-                    window.open(waLink, '_blank');
-                });
-            } else {
-                alert('No cellphone numbers found in the input string.');
-            }
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const phoneInput = document.getElementById('phoneNumberInput');
+      const openButton = document.getElementById('openWhatsAppBtn');
+      
+      openButton.addEventListener('click', openWhatsAppChats);
+      phoneInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') openWhatsAppChats();
+      });
+      
+      function openWhatsAppChats() {
+        const inputText = phoneInput.value.trim();
+        
+        if (!inputText) {
+          alert('Please enter at least one phone number.');
+          return;
         }
-    </script>
+        
+        const phonePattern = /\b\d{10,13}\b/g;
+        const phoneNumbers = inputText.match(phonePattern);
+        
+        if (!phoneNumbers || phoneNumbers.length === 0) {
+          alert('No valid phone numbers found. Please enter 10-13 digit numbers.');
+          return;
+        }
+        
+        phoneNumbers.forEach(number => {
+          let formattedNumber = number.replace(/\D/g, '');
+          
+          if (formattedNumber.length === 10) {
+            formattedNumber = '55' + formattedNumber;
+          } else if (formattedNumber.length === 11 && formattedNumber[0] !== '5') {
+            formattedNumber = '55' + formattedNumber;
+          }
+          
+          const whatsappUrl = `https://wa.me/${formattedNumber}`;
+          window.open(whatsappUrl, '_blank');
+        });
+      }
+    });
+  </script>
 </body>
 </html>
